@@ -147,9 +147,9 @@ function run_sherlock {
 function run_sapling {
     # Allocate up to 2 nodes, from n0002 up to n0003
     if (( NUM_NODES == 1 )); then
-        NODES="n0002"
+        NODES="n0000"
     elif (( NUM_NODES == 2 )); then
-        NODES="n0002,n0003"
+        NODES="n0000,n0001"
     else
         quit "Too many nodes requested"
     fi
