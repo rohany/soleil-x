@@ -1,0 +1,76 @@
+Sending output to .
+Invoking Legion on 1 rank(s), 1 node(s) (1 rank(s) per node), as follows:
+/home/ahenz/new/soleil//src/soleil_ghc.exec -i ../testcases/tgv.json -logfile ./%.log -ll:cpu 0 -ll:ocpu 1 -ll:onuma 0 -ll:okindhack -ll:othr 4 -ll:gpu 2 -ll:fsize 5000 -ll:zsize 1024 -ll:ib_zsize 1024 -ll:util 4 -ll:ahandlers 4 -ll:io 1 -ll:dma 2 -ll:csize 30000 -ll:rsize 0 -ll:ib_rsize 1024 -ll:gsize 0 -ll:stacksize 8 -ll:ostack 8 -lg:sched -1 -lg:hysteresis 0
+Inserting node: 0, processor 2089670227099910144 of kind UTIL PROC
+Inserting node: 0, processor 2089670227099910145 of kind UTIL PROC
+Inserting node: 0, processor 2089670227099910146 of kind UTIL PROC
+Inserting node: 0, processor 2089670227099910147 of kind UTIL PROC
+Inserting node: 0, processor 2089670227099910148 of kind IO PROC
+Inserting node: 0, processor 2089670227099910149 of kind CPU PROC
+Inserting node: 0, processor 2089670227099910150 of kind GPU PROC
+Inserting node: 0, processor 2089670227099910151 of kind GPU PROC
+Number of nodes: 1, 1
+Params: p_coarse = 0.500000; p_itl_change_nodes = 0.000000; start_percent_on_cpu=0
+In start timer
+In stop timer
+Stopping timer after iteration 0 -- Just tried this mapping with time 242 ms:
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+In stop timer
+In start timer
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code.. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+mpiexec detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[56430,1],0]
+  Exit code:    1
+--------------------------------------------------------------------------

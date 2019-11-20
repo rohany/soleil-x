@@ -52,12 +52,13 @@ ifeq ($(USE_HDF), 1)
   LINK_FLAGS += -l$(HDF_LIBNAME)
 endif
 LINK_FLAGS += -lm
+#LINK_FLAGS += -lautomated_mapper
 
 .PHONY: default all clean
 
-default: soleil.exec
+default: soleil_ghc.exec
 
-all: soleil.exec dom_host.exec
+all: soleil.exec soleil_ghc.exec dom_host.exec
 
 clean:
 	$(RM) *.exec *.o *-desugared.rg config_schema.h
@@ -65,7 +66,16 @@ clean:
 %-desugared.rg: %.rg
 	./desugar.py $< > $@
 
+automated_mapper.o: ../../legion/language/examples/automated_mapper.cc ../../legion/language/examples/automated_mapper.h
+	$(CXX) $(CXXFLAGS) -c -o  $@ $<
+
+soleil_ghc.o: soleil_ghc-desugared.rg soleil_mapper_ghc.h config_schema.h hdf_helper.rg dom_ghc-desugared.rg util-desugared.rg
+	$(REGENT) soleil_ghc-desugared.rg $(REGENT_FLAGS)
+
 soleil.exec: soleil.o soleil_mapper.o config_schema.o json.o
+	$(CXX) -o $@ $^ $(LINK_FLAGS)
+
+soleil_ghc.exec: soleil_ghc.o soleil_mapper_ghc.o automated_mapper.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
 soleil.o: soleil-desugared.rg soleil_mapper.h config_schema.h hdf_helper.rg dom-desugared.rg util-desugared.rg
@@ -74,10 +84,19 @@ soleil.o: soleil-desugared.rg soleil_mapper.h config_schema.h hdf_helper.rg dom-
 dom_host.exec: dom_host.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
+dom_ghc_host.exec: dom_ghc_host.o config_schema.o json.o
+	$(CXX) -o $@ $^ $(LINK_FLAGS)
+
 dom_host.o: dom_host.rg config_schema.h dom-desugared.rg util-desugared.rg
 	$(REGENT) dom_host.rg $(REGENT_FLAGS)
 
+dom_ghc_host.o: dom_ghc_host.rg config_schema.h dom_ghc-desugared.rg util-desugared.rg
+	$(REGENT) dom_ghc_host.rg $(REGENT_FLAGS)
+
 soleil_mapper.o: soleil_mapper.cc soleil_mapper.h config_schema.h
+	$(CXX) $(CXXFLAGS) -c -o  $@ $<
+
+soleil_mapper_ghc.o: soleil_mapper_ghc.cc soleil_mapper_ghc.h config_schema.h
 	$(CXX) $(CXXFLAGS) -c -o  $@ $<
 
 config_schema.o config_schema.h: process_schema.rg config_schema.lua json.h util-desugared.rg
