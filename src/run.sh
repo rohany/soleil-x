@@ -147,9 +147,9 @@ function run_sherlock {
 function run_sapling {
     # Allocate up to 2 nodes, from n0002 up to n0003
     if (( NUM_NODES == 1 )); then
-        NODES="n0000"
+        NODES="n0003"
     elif (( NUM_NODES == 2 )); then
-        NODES="n0000,n0001"
+        NODES="n0001,n0002"
     else
         quit "Too many nodes requested"
     fi
@@ -157,7 +157,7 @@ function run_sapling {
     CORES_PER_NODE=12
     RAM_PER_NODE=30000
     GPUS_PER_NODE=2
-    FB_PER_GPU=5000
+    FB_PER_GPU=6000
     source "$SOLEIL_DIR"/src/jobscript_shared.sh
     # Emit final command
     mpiexec -H "$NODES" --bind-to none \

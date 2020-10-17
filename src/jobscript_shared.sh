@@ -80,7 +80,7 @@ fi
 # Add CUDA options
 GPU_OPTS=
 if [[ "$USE_CUDA" == 1 ]]; then
-    GPU_OPTS="-ll:gpu $GPUS_PER_RANK -ll:fsize $FB_PER_GPU -ll:zsize 1024 -ll:ib_zsize 1024"
+    GPU_OPTS="-ll:gpu $GPUS_PER_RANK -ll:fsize $FB_PER_GPU -ll:zsize 15000 -ll:ib_zsize 15000"
 fi
 # Add GASNET options
 GASNET_OPTS=
@@ -90,7 +90,7 @@ fi
 # Synthesize final command
 COMMAND="$EXECUTABLE $ARGS \
   -logfile $OUT_DIR/%.log $DEBUG_OPTS $PROFILER_OPTS \
-  -ll:cpu 0 -ll:ocpu 1 -ll:onuma 0 -ll:okindhack -ll:othr $THREADS_PER_RANK \
+  -ll:cpu 0 -ll:ocpu 6 -ll:onuma 0 -ll:okindhack -ll:othr $THREADS_PER_RANK \
   $GPU_OPTS \
   -ll:util 4 -ll:ahandlers 4 -ll:io 1 -ll:dma 2 \
   -ll:csize $RAM_PER_RANK \

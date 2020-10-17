@@ -7,11 +7,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "../language/examples/automated_mapper.h"
+#include "../language/examples/beam_mapper.h"
 #include "realm/logging.h"
 
 #include "config_schema.h"
-#include "soleil_mapper_ghc.h"
+#include "soleil_mapper_beam.h"
 
 using namespace Legion;
 using namespace Legion::Mapping;
@@ -49,7 +49,7 @@ using namespace Legion::Mapping;
 // HELPER CODE
 //=============================================================================
 
-static Realm::Logger LOG("soleil_mapper_ghc");
+static Realm::Logger LOG("soleil_mapper_beam");
 
 #define CHECK(cond, ...)                        \
   do {                                          \
@@ -281,10 +281,10 @@ AddressSpace SplinteringFunctor::get_rank(const DomainPoint &point) {
 // MAPPER CLASS: CONSTRUCTOR
 //=============================================================================
 
-class SoleilMapper : public AutomatedMapper {
+class SoleilMapper : public BeamMapper {
 public:
   SoleilMapper(Runtime* rt, Machine machine, Processor local)
-    : AutomatedMapper(rt->get_mapper_runtime(), machine, local, "soleil_mapper_ghc"),
+    : BeamMapper(rt->get_mapper_runtime(), machine, local, "soleil_mapper_beam"),
       all_procs_(remote_cpus.size()) {
 
     // add_task_to_care(") here
@@ -328,7 +328,7 @@ public:
     add_task_to_care("Particles_AddFlowCoupling.parallelized");
     add_task_to_care("Flow_AddParticlesCoupling.parallelized");
     add_task_to_care("Particles_CalcDeltaTerms.parallelized");
-    name_application("soleil-ghc");
+    name_application("soleil_beam");
 
 /*
     // Set the umask of the process to clear S_IWGRP and S_IWOTH.
@@ -557,7 +557,7 @@ public:
   virtual void select_task_options(const MapperContext ctx,
                                    const Task& task,
                                    TaskOptions& output) {
-    AutomatedMapper::select_task_options(ctx, task, output);
+    BeamMapper::select_task_options(ctx, task, output);
     output.replicate =
       EQUALS(task.get_task_name(), "workSingle") ||
       EQUALS(task.get_task_name(), "workDual");
@@ -575,7 +575,7 @@ public:
     }
     // Other tasks: defer to the default mapping policy
     else {
-      AutomatedMapper::default_policy_rank_processor_kinds(ctx, task, ranking);
+      BeamMapper::default_policy_rank_processor_kinds(ctx, task, ranking);
     }
   }
 
@@ -625,11 +625,11 @@ public:
     // Index space tasks: defer to the default mapping policy; slice_task will
     // eventually be called to do the mapping properly
     if (task.is_index_space) {
-      return AutomatedMapper::default_policy_select_initial_processor(ctx, task);
+      return BeamMapper::default_policy_select_initial_processor(ctx, task);
     }
     // Main task: defer to the default mapping policy
     else if (EQUALS(task.get_task_name(), "main")) {
-      return AutomatedMapper::default_policy_select_initial_processor(ctx, task);
+      return BeamMapper::default_policy_select_initial_processor(ctx, task);
     }
     // Other tasks
     else {
@@ -738,7 +738,7 @@ public:
     // For HDF copies, defer to the default mapping policy.
     if (EQUALS(copy.parent_task->get_task_name(), "dumpTile") ||
         EQUALS(copy.parent_task->get_task_name(), "loadTile")) {
-      AutomatedMapper::map_copy(ctx, copy, input, output);
+      BeamMapper::map_copy(ctx, copy, input, output);
       return;
     }
     // Sanity checks
@@ -828,7 +828,7 @@ public:
                               MapperContext ctx,
                               Processor target_proc,
                               const RegionRequirement& req) {
-    return AutomatedMapper::default_policy_select_target_memory
+    return BeamMapper::default_policy_select_target_memory
       (ctx, target_proc, req);
   }
 

@@ -5,7 +5,7 @@ import "regent"
 -------------------------------------------------------------------------------
 
 local C = regentlib.c
-local MAPPER = terralib.includec("soleil_mapper_ghc.h")
+local MAPPER = terralib.includec("soleil_mapper_beam.h")
 local SCHEMA = terralib.includec("config_schema.h")
 local UTIL = require 'util-desugared'
 
@@ -167,7 +167,7 @@ struct Radiation_columns {
 -- EXTERNAL MODULE IMPORTS
 -------------------------------------------------------------------------------
 
-local DOM = (require 'dom_ghc-desugared')(MAX_ANGLES_PER_QUAD, Radiation_columns, SCHEMA)
+local DOM = (require 'dom_beam-desugared')(MAX_ANGLES_PER_QUAD, Radiation_columns, SCHEMA)
 
 local HDF_FLUID = (require 'hdf_helper')(int3d, int3d, Fluid_columns,
                                          Fluid_primitives,
@@ -5810,7 +5810,7 @@ task workSingle(config : Config)
   var is_FakeCopyQueue = ispace(int1d, 0)
   var FakeCopyQueue = region(is_FakeCopyQueue, CopyQueue_columns);
   [UTIL.emitRegionTagAttach(FakeCopyQueue, MAPPER.SAMPLE_ID_TAG, -1, int)];
-  for epoch = 0, 30 do 
+  for epoch = 0, 30000 do 
     -- Init data & pull out 1 iteration
     var exit_bool = false;
     [SIM.DeclSymbolsAgain(config)];
@@ -6068,4 +6068,4 @@ end
 -- COMPILATION CALL
 -------------------------------------------------------------------------------
 
-regentlib.saveobj(main, "soleil_ghc.o", "object", MAPPER.register_mappers)
+regentlib.saveobj(main, "soleil_beam.o", "object", MAPPER.register_mappers)

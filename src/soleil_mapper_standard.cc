@@ -7,11 +7,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "../language/examples/automated_mapper.h"
+#include "../language/examples/specified_mapper.h"
 #include "realm/logging.h"
 
 #include "config_schema.h"
-#include "soleil_mapper_ghc.h"
+#include "soleil_mapper_standard.h"
 
 using namespace Legion;
 using namespace Legion::Mapping;
@@ -49,7 +49,7 @@ using namespace Legion::Mapping;
 // HELPER CODE
 //=============================================================================
 
-static Realm::Logger LOG("soleil_mapper_ghc");
+static Realm::Logger LOG("soleil_mapper_standard");
 
 #define CHECK(cond, ...)                        \
   do {                                          \
@@ -64,12 +64,12 @@ static Realm::Logger LOG("soleil_mapper_ghc");
 #define STARTS_WITH(str, prefix)                \
   (strncmp((str), (prefix), sizeof(prefix) - 1) == 0)
 
-/*static const void* first_arg(const Task& task) {
+static const void* first_arg(const Task& task) {
   const char* ptr = static_cast<const char*>(task.args);
   // Skip over Regent-added arguments.
   // XXX: This assumes Regent's calling convention won't change.
   return static_cast<const void*>(ptr + sizeof(uint64_t));
-}*/
+}
 
 //=============================================================================
 // INTRA-SAMPLE MAPPING
@@ -281,56 +281,15 @@ AddressSpace SplinteringFunctor::get_rank(const DomainPoint &point) {
 // MAPPER CLASS: CONSTRUCTOR
 //=============================================================================
 
-class SoleilMapper : public AutomatedMapper {
+class SoleilMapper : public SpecifiedMapper {
 public:
   SoleilMapper(Runtime* rt, Machine machine, Processor local)
-    : AutomatedMapper(rt->get_mapper_runtime(), machine, local, "soleil_mapper_ghc"),
+    : SpecifiedMapper(rt->get_mapper_runtime(), machine, local, "soleil_mapper_standard"),
       all_procs_(remote_cpus.size()) {
 
-    // add_task_to_care(") here
-    add_task_to_care("Flow_CalculateAverageTemperature.parallelized");
-    add_task_to_care("Flow_CalculateAveragePressure.parallelized");
-//    add_task_to_care("__binary_double_double_+");
-//    add_task_to_care("__binary_double_double_/");
-//    add_task_to_care("__binary_double_double_*");
-    add_task_to_care("Flow_CalculateAverageKineticEnergy.parallelized");
-    add_task_to_care("Particles_InitializeTemporaries.parallelized");
-//    add_task_to_care("__binary_double_int64_/");
-//    add_task_to_care("Console_Write");
-    add_task_to_care("Flow_InitializeTemporaries.parallelized");
-    add_task_to_care("Flow_InitializeTimeDerivatives.parallelized");
-    add_task_to_care("Flow_ComputeVelocityGradient.parallelized");
-    add_task_to_care("Flow_UpdateGhostVelocityGradient");
-    add_task_to_care("Flow_GetFluxX.parallelized");
-    add_task_to_care("Flow_GetFluxY.parallelized");
-    add_task_to_care("Flow_GetFluxZ.parallelized");
-    add_task_to_care("Flow_AddBodyForces.parallelized");
-    add_task_to_care("Flow_UpdateUsingFluxZ.parallelized");
-    add_task_to_care("Flow_UpdateUsingFluxY.parallelized");
-    add_task_to_care("Flow_UpdateUsingFluxX.parallelized");
-    add_task_to_care("Flow_UpdateVars.parallelized");
-    add_task_to_care("Flow_UpdateAuxiliaryVelocity.parallelized");
-    add_task_to_care("Flow_UpdateGhostVelocity");
-    add_task_to_care("Flow_UpdateAuxiliaryThermodynamics.parallelized");
-    add_task_to_care("Flow_UpdateGhostThermodynamics");
-    add_task_to_care("Flow_UpdateGhostConserved.parallelized");
-    add_task_to_care("Flow_CalculateAverageKineticEnergy.parallelized");
-    add_task_to_care("Flow_CalculateViscousSpectralRadius.parallelized");
-    add_task_to_care("Flow_CalculateHeatConductionSpectralRadius.parallelized");
-    add_task_to_care("Flow_CalculateConvectiveSpectralRadius.parallelized");
-    add_task_to_care("Particles_LocateInCells");
-    add_task_to_care("Particles_IntegrateQuantities.parallelized");
-    add_task_to_care("Particles_DeleteEscapingParticles");
-    add_task_to_care("Particles_UpdateAuxiliary.parallelized");
-    add_task_to_care("Particles_UpdateVars.parallelized");
-    add_task_to_care("Particles_AddBodyForces.parallelized");
-    add_task_to_care("Particles_AbsorbRadiationAlgebraic.parallelized");
-    add_task_to_care("Particles_AddFlowCoupling.parallelized");
-    add_task_to_care("Flow_AddParticlesCoupling.parallelized");
-    add_task_to_care("Particles_CalcDeltaTerms.parallelized");
-    name_application("soleil-ghc");
+    name_application("soleil_standard");
 
-/*
+
     // Set the umask of the process to clear S_IWGRP and S_IWOTH.
     umask(022);
     // Assign ranks sequentially to samples, each sample getting one rank for
@@ -394,13 +353,13 @@ public:
     for (AddressSpace rank = 0; rank < remote_cpus.size(); ++rank) {
       CHECK(get_procs(rank, Processor::IO_PROC).size() > 0,
             "No IO processor on rank %u", rank);
-    }*/
+    }
   }
 
 //=============================================================================
 // MAPPER CLASS: MAPPING LOGIC
 //=============================================================================
-/*
+
 private:
   std::vector<unsigned> find_sample_ids(const MapperContext ctx,
                                         const Task& task) const {
@@ -557,7 +516,7 @@ public:
   virtual void select_task_options(const MapperContext ctx,
                                    const Task& task,
                                    TaskOptions& output) {
-    AutomatedMapper::select_task_options(ctx, task, output);
+    SpecifiedMapper::select_task_options(ctx, task, output);
     output.replicate =
       EQUALS(task.get_task_name(), "workSingle") ||
       EQUALS(task.get_task_name(), "workDual");
@@ -575,7 +534,7 @@ public:
     }
     // Other tasks: defer to the default mapping policy
     else {
-      AutomatedMapper::default_policy_rank_processor_kinds(ctx, task, ranking);
+      SpecifiedMapper::default_policy_rank_processor_kinds(ctx, task, ranking);
     }
   }
 
@@ -625,11 +584,11 @@ public:
     // Index space tasks: defer to the default mapping policy; slice_task will
     // eventually be called to do the mapping properly
     if (task.is_index_space) {
-      return AutomatedMapper::default_policy_select_initial_processor(ctx, task);
+      return SpecifiedMapper::default_policy_select_initial_processor(ctx, task);
     }
     // Main task: defer to the default mapping policy
     else if (EQUALS(task.get_task_name(), "main")) {
-      return AutomatedMapper::default_policy_select_initial_processor(ctx, task);
+      return SpecifiedMapper::default_policy_select_initial_processor(ctx, task);
     }
     // Other tasks
     else {
@@ -738,7 +697,7 @@ public:
     // For HDF copies, defer to the default mapping policy.
     if (EQUALS(copy.parent_task->get_task_name(), "dumpTile") ||
         EQUALS(copy.parent_task->get_task_name(), "loadTile")) {
-      AutomatedMapper::map_copy(ctx, copy, input, output);
+      SpecifiedMapper::map_copy(ctx, copy, input, output);
       return;
     }
     // Sanity checks
@@ -828,7 +787,7 @@ public:
                               MapperContext ctx,
                               Processor target_proc,
                               const RegionRequirement& req) {
-    return AutomatedMapper::default_policy_select_target_memory
+    return SpecifiedMapper::default_policy_select_target_memory
       (ctx, target_proc, req);
   }
 
@@ -886,7 +845,7 @@ public:
                                        MustEpochShardingFunctorOutput& output) {
     CHECK(false, "Unsupported: Sharded MustEpoch");
   }
-*/
+
 //=============================================================================
 // MAPPER CLASS: HELPER METHODS
 //=============================================================================
