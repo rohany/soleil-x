@@ -92,7 +92,7 @@ soleil_beam.o: soleil_beam-desugared.rg soleil_mapper_beam.h config_schema.h hdf
 soleil_specified.o: soleil_specified-desugared.rg soleil_mapper_specified.h config_schema.h hdf_helper.rg dom_specified-desugared.rg util-desugared.rg
 	$(REGENT) soleil_specified-desugared.rg $(REGENT_FLAGS)
 
-soleil_standard.o: soleil_standard-desugared.rg soleil_mapper_standard.h config_schema.h hdf_helper.rg dom_standard-desugared.rg util-desugared.rg
+soleil_standard.o: soleil_standard-desugared.rg soleil_mapper.h config_schema.h hdf_helper.rg dom_standard-desugared.rg util-desugared.rg
 	$(REGENT) soleil_standard-desugared.rg $(REGENT_FLAGS)
 
 soleil.exec: soleil.o soleil_mapper.o config_schema.o json.o
@@ -107,7 +107,7 @@ soleil_beam.exec: soleil_beam.o soleil_mapper_beam.o beam_mapper.o config_schema
 soleil_specified.exec: soleil_specified.o soleil_mapper_specified.o specified_mapper.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
-soleil_standard.exec: soleil_standard.o soleil_mapper_standard.o specified_mapper.o config_schema.o json.o
+soleil_standard.exec: soleil_standard.o soleil_mapper.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
 soleil.o: soleil-desugared.rg soleil_mapper.h config_schema.h hdf_helper.rg dom-desugared.rg util-desugared.rg

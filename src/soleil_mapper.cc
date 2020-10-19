@@ -382,7 +382,7 @@ private:
       sample_ids.push_back(*static_cast<const unsigned*>(info));
     }
     // Tasks with Config as 1st argument: read config.Mapping.sampleId
-    else if (EQUALS(task.get_task_name(), "workSingle")) {
+    else if (EQUALS(task.get_task_name(), "workSingle") || EQUALS(task.get_task_name(), "printElapsed")) {
       const Config* config = static_cast<const Config*>(first_arg(task));
       sample_ids.push_back(static_cast<unsigned>(config->Mapping.sampleId));
     }
@@ -433,6 +433,7 @@ private:
     }
     // Tasks that should run on the first rank of their sample's allocation
     else if (EQUALS(task.get_task_name(), "workSingle") ||
+	     EQUALS(task.get_task_name(), "printElapsed") ||
              EQUALS(task.get_task_name(), "workDual") ||
              EQUALS(task.get_task_name(), "cache_grid_translation") ||
              EQUALS(task.get_task_name(), "initialize_angles") ||
@@ -480,6 +481,7 @@ private:
     }
     // Sample-specific tasks that are launched individually
     else if (EQUALS(task.get_task_name(), "workSingle") ||
+             EQUALS(task.get_task_name(), "printElapsed") ||
              EQUALS(task.get_task_name(), "workDual") ||
              STARTS_WITH(task.get_task_name(), "sweep_") ||
              EQUALS(task.get_task_name(), "cache_grid_translation") ||

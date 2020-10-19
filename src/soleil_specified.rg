@@ -5804,64 +5804,36 @@ task returned()
   return
 end
 
+task printElapsed(t : float)
+  C.printf("ELAPSED TIME = %7.3f s\n", t)
+end
+
 __forbid(__optimize) __demand(__inner, __replicable)
 task workSingle(config : Config)
   [SIM.DeclSymbols(config)];
   var is_FakeCopyQueue = ispace(int1d, 0)
   var FakeCopyQueue = region(is_FakeCopyQueue, CopyQueue_columns);
   [UTIL.emitRegionTagAttach(FakeCopyQueue, MAPPER.SAMPLE_ID_TAG, -1, int)];
-  for epoch = 0, 30000 do 
-    -- Init data & pull out 1 iteration
-    var exit_bool = false;
-    [SIM.DeclSymbolsAgain(config)];
-    [parallelizeFor(SIM, rquote
-      [SIM.InitRegions(config)];
+  [parallelizeFor(SIM, rquote
+    [SIM.InitRegions(config)];
+    start_timer();
+    __fence(__execution, __block)
+    var ts_start = C.legion_get_current_time_in_micros()
+    while true do
       [SIM.MainLoopHeader(config)];
       [SIM.PerformIO(config)];
       if SIM.Integrator_exitCond then
-        exit_bool = true;
         break
-      else 
-        [SIM.MainLoopBody(config, rexpr false end, FakeCopyQueue)];
       end
-    end)];
-    regentlib.assert (exit_bool == false, "Not enough loop iterations");
-
-    -- Start timer
-    C.legion_runtime_issue_execution_fence(__runtime(), __context());
-    start_timer();
-    var f1 : legion_future_t = C.legion_runtime_select_tunable_value(__runtime(), __context(), 124, 0, 0);
-    C.legion_future_get_untyped_pointer(f1);
-    C.legion_future_destroy(f1);
-
-    [parallelizeFor(SIM, rquote
-      while true do
-        [SIM.MainLoopHeader(config)];
-        [SIM.PerformIO(config)];
-        if SIM.Integrator_exitCond then
-          break
-        end
-        [SIM.MainLoopBody(config, rexpr false end, FakeCopyQueue)];
-      end
-    end)];
-
-    -- End timer
-    C.legion_runtime_issue_execution_fence(__runtime(), __context());
+      [SIM.MainLoopBody(config, rexpr false end, FakeCopyQueue)];
+    end
+    __fence(__execution, __block)
+    var ts_end = C.legion_get_current_time_in_micros()
+    var sim_time = 1e-6 * (ts_end - ts_start)
+    -- C.printf("ELAPSED TIME = %7.3f s\n", sim_time)
+    printElapsed(sim_time);
     stop_timer();
-    var f2 : legion_future_t = C.legion_runtime_select_tunable_value(__runtime(), __context(), 123, 0, 0)
-    C.legion_future_get_untyped_pointer(f2);
-    C.legion_future_destroy(f2)
-
-  end
-
-  -- Output mapping
-  C.legion_runtime_issue_execution_fence(__runtime(), __context());
-  output_mapping();
-  C.legion_runtime_issue_mapping_fence(__runtime(), __context());
-  C.legion_runtime_issue_execution_fence(__runtime(), __context());
---  C.fflush(epochs);
---  C.fclose(epochs);
-
+  end)];
   [SIM.Cleanup(config)];
 end
 
