@@ -3,9 +3,10 @@
 #SBATCH --job-name=soleil
 #SBATCH --partition=aaiken
 
-CORES_PER_NODE=20
+CORES_PER_NODE=10
 RAM_PER_NODE=200000
-GPUS_PER_NODE=4
+GPUS_PER_NODE=2
+# TODO (rohany): Maybe bring this memory amount down?
 FB_PER_GPU=15000
 source "$SOLEIL_DIR"/src/jobscript_shared.sh
 

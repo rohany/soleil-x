@@ -203,7 +203,7 @@ elif [[ "$(uname -n)" == *"daint"* ]]; then
     run_pizdaint
 elif [[ "$(uname -n)" == *"certainty"* ]]; then
     run_certainty
-elif [[ "$(uname -n)" == *"sh-ln"* ]]; then
+elif [[ "$(uname -n)" == *"sh"* ]]; then
     run_sherlock
 elif [[ "$(uname -n)" == *"sapling"* ]]; then
     run_sapling

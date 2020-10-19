@@ -52,6 +52,11 @@ ifeq ($(USE_HDF), 1)
   LINK_FLAGS += -l$(HDF_LIBNAME)
 endif
 LINK_FLAGS += -lm
+
+ifdef USE_LPMIX
+  LINK_FLAGS += -lpmix
+endif
+
 #LINK_FLAGS += -lautomated_mapper
 
 .PHONY: default all clean
