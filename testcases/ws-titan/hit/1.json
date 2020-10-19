@@ -124,7 +124,7 @@
         "feeding": {
             "type": "OFF"
         }, 
-        "maxNum": 3964202, 
+        "maxNum": 495525, 
         "heatCapacity": 506.0, 
         "initTemperature": 300.0, 
         "density": 8900.0, 
@@ -140,7 +140,7 @@
         "initCase": "Uniform", 
         "maxSkew": 1.1, 
         "restartDir": "", 
-        "initNum": 3964202, 
+        "initNum": 495525, 
         "escapeRatioPerDir": 0.005, 
         "diameterMean": 0.000501174299883
     }, 
@@ -155,12 +155,12 @@
             0.0, 
             0.0
         ], 
-        "yNum": 256, 
+        "yNum": 64, 
         "yWidth": 1.57079632675, 
-        "zNum": 128, 
+        "zNum": 32, 
         "zWidth": 0.785398163375, 
         "xWidth": 1.57079632675, 
-        "xNum": 256
+        "xNum": 64
     }, 
     "IO": {
         "restartEveryTimeSteps": -1, 

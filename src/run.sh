@@ -1,5 +1,4 @@
-#!/bin/bash -eu
-
+#!/bin/bash -eu 
 ###############################################################################
 # Helper functions
 ###############################################################################
@@ -147,7 +146,7 @@ function run_sherlock {
 function run_sapling {
     # Allocate up to 2 nodes, from n0002 up to n0003
     if (( NUM_NODES == 1 )); then
-        NODES="n0003"
+        NODES="n0001"
     elif (( NUM_NODES == 2 )); then
         NODES="n0001,n0002"
     else
@@ -205,7 +204,7 @@ elif [[ "$(uname -n)" == *"certainty"* ]]; then
     run_certainty
 elif [[ "$(uname -n)" == *"sh"* ]]; then
     run_sherlock
-elif [[ "$(uname -n)" == *"sapling"* ]]; then
+elif [[ "$(uname -n)" == *"sapling"* || "$(uname -n)" == "n0001" ]]; then
     run_sapling
 else
     echo 'Hostname not recognized; assuming local machine run w/o GPUs'
