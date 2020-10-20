@@ -5816,7 +5816,7 @@ task workSingle(config : Config)
   [UTIL.emitRegionTagAttach(FakeCopyQueue, MAPPER.SAMPLE_ID_TAG, -1, int)];
   [parallelizeFor(SIM, rquote
     [SIM.InitRegions(config)];
-    start_timer();
+    -- start_timer();
     __fence(__execution, __block)
     var ts_start = C.legion_get_current_time_in_micros()
     while true do
@@ -5832,7 +5832,7 @@ task workSingle(config : Config)
     var sim_time = 1e-6 * (ts_end - ts_start)
     -- C.printf("ELAPSED TIME = %7.3f s\n", sim_time)
     printElapsed(sim_time);
-    stop_timer();
+    -- stop_timer();
   end)];
   [SIM.Cleanup(config)];
 end
@@ -6018,8 +6018,17 @@ task main()
       var config : Config
       SCHEMA.parse_Config(&config, args.argv[i+1])
       initSingle(&config, launched, outDirBase)
+      var initial_launched = launched
       launched += 1
-      workSingle(config)
+      for epoch=0, 20 do
+        if epoch > 0 then
+          SCHEMA.parse_Config(&config, args.argv[i+1])
+          config.Mapping.sampleId = initial_launched
+          C.snprintf([&int8](config.Mapping.outDir), 256, "%s/sample%d", outDirBase, initial_launched)
+        end
+        workSingle(config)
+        __fence(__execution, __block)
+      end
     elseif C.strcmp(args.argv[i], '-m') == 0 and i < args.argc-1 then
       var mc : MultiConfig
       SCHEMA.parse_MultiConfig(&mc, args.argv[i+1])

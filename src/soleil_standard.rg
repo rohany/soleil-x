@@ -6016,8 +6016,17 @@ task main()
       var config : Config
       SCHEMA.parse_Config(&config, args.argv[i+1])
       initSingle(&config, launched, outDirBase)
+      var initial_launched = launched
       launched += 1
-      workSingle(config)
+      for epoch=0, 20 do
+        if epoch > 0 then
+          SCHEMA.parse_Config(&config, args.argv[i+1])
+          config.Mapping.sampleId = initial_launched
+          C.snprintf([&int8](config.Mapping.outDir), 256, "%s/sample%d", outDirBase, initial_launched)
+        end  
+        workSingle(config)
+        __fence(__execution, __block)
+      end
     elseif C.strcmp(args.argv[i], '-m') == 0 and i < args.argc-1 then
       var mc : MultiConfig
       SCHEMA.parse_MultiConfig(&mc, args.argv[i+1])
