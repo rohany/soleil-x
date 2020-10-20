@@ -90,6 +90,7 @@ done
 if (( NUM_RANKS < 1 )); then
     quit "No configuration files provided"
 fi
+MINUTES=90
 export MINUTES
 export NUM_RANKS
 

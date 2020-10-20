@@ -138,9 +138,10 @@ function run_sherlock {
     if [[ ! -z "$AFTER" ]]; then
         DEPS="-d afterok:$AFTER"
     fi
-    sbatch --export=ALL \
-        -N "$NUM_NODES" -t "$WALLTIME" --gres="$RESOURCES" $DEPS \
-        "$SOLEIL_DIR"/src/sherlock.slurm
+    "$SOLEIL_DIR"/src/sherlock.slurm
+    # sbatch --export=ALL \
+    #     -N "$NUM_NODES" -t "$WALLTIME" --gres="$RESOURCES" $DEPS \
+    #     "$SOLEIL_DIR"/src/sherlock.slurm
 }
 
 function run_sapling {

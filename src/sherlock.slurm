@@ -4,13 +4,15 @@
 #SBATCH --partition=aaiken
 
 CORES_PER_NODE=10
-RAM_PER_NODE=200000
+# RAM_PER_NODE=100000
+RAM_PER_NODE=30000
 GPUS_PER_NODE=2
 # TODO (rohany): Maybe bring this memory amount down?
 FB_PER_GPU=15000
 source "$SOLEIL_DIR"/src/jobscript_shared.sh
 
-srun -n "$NUM_RANKS" --ntasks-per-node="$RANKS_PER_NODE" --cpus-per-task="$CORES_PER_RANK" \
+set -x
+srun -p aaiken --gres=gpu:2 -N "$NUM_RANKS" -n "$NUM_RANKS" --ntasks-per-node="$RANKS_PER_NODE" --cpus-per-task="$CORES_PER_RANK" --exclusive \
     --export=ALL \
     $COMMAND
 
