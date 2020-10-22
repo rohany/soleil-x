@@ -124,7 +124,7 @@
         "feeding": {
             "type": "OFF"
         }, 
-        "maxNum": 495525, 
+        "maxNum": 495524, 
         "heatCapacity": 506.0, 
         "initTemperature": 300.0, 
         "density": 8900.0, 
@@ -140,7 +140,7 @@
         "initCase": "Uniform", 
         "maxSkew": 1.2, 
         "restartDir": "", 
-        "initNum": 495525, 
+        "initNum": 495524, 
         "escapeRatioPerDir": 0.005, 
         "diameterMean": 0.000501174299883
     }, 

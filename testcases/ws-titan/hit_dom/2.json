@@ -124,7 +124,7 @@
         "feeding": {
             "type": "OFF"
         }, 
-        "maxNum": 3964202, 
+        "maxNum": 495524, 
         "heatCapacity": 506.0, 
         "initTemperature": 300.0, 
         "density": 8900.0, 
@@ -140,7 +140,7 @@
         "initCase": "Uniform", 
         "maxSkew": 1.2, 
         "restartDir": "", 
-        "initNum": 3964202, 
+        "initNum": 495524, 
         "escapeRatioPerDir": 0.005, 
         "diameterMean": 0.000501174299883
     }, 
@@ -159,7 +159,7 @@
         }, 
         "yLoIntensity": 3242188.21442, 
         "zHiEmiss": 1.0, 
-        "zNum": 128, 
+        "zNum": 8, 
         "zLoIntensity": 0.0, 
         "yHiWindow": {
             "uptoCell": [
@@ -171,7 +171,7 @@
                 -1
             ]
         }, 
-        "yNum": 64, 
+        "yNum": 8, 
         "yLoWindow": {
             "uptoCell": [
                 9999, 
@@ -214,7 +214,7 @@
         "qs": 0.7, 
         "xLoIntensity": 0.0, 
         "xHiTemp": 0.0, 
-        "xNum": 128, 
+        "xNum": 16, 
         "qa": 0.4, 
         "zLoTemp": 0.0, 
         "yLoTemp": 0.0, 
@@ -237,12 +237,12 @@
             0.0, 
             0.0
         ], 
-        "yNum": 128, 
+        "yNum": 64, 
         "yWidth": 0.785398163375, 
-        "zNum": 256, 
-        "zWidth": 1.57079632675, 
+        "zNum": 32, 
+        "zWidth": 0.785398163375, 
         "xWidth": 1.57079632675, 
-        "xNum": 256
+        "xNum": 64
     }, 
     "IO": {
         "restartEveryTimeSteps": -1, 
