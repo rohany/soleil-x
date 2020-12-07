@@ -85,6 +85,9 @@ automated_mapper.o: ../../automated_mapper.cc ../../automated_mapper.h
 beam_mapper.o: ../../beam_mapper.cc ../../beam_mapper.h
 	$(CXX) $(CXXFLAGS) -c -o  $@ $<
 
+automap_shared.o: ../../automap_shared.cc ../../automap_shared.h
+	$(CXX) $(CXXFLAGS) -c -o  $@ $<
+
 specified_mapper.o: ../../specified_mapper.cc ../../specified_mapper.h
 	$(CXX) $(CXXFLAGS) -c -o  $@ $<
 
@@ -106,10 +109,10 @@ soleil.exec: soleil.o soleil_mapper.o config_schema.o json.o
 soleil_ghc.exec: soleil_ghc.o soleil_mapper_ghc.o automated_mapper.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
-soleil_beam.exec: soleil_beam.o soleil_mapper_beam.o beam_mapper.o config_schema.o json.o
+soleil_beam.exec: soleil_beam.o soleil_mapper_beam.o automap_shared.o beam_mapper.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
-soleil_specified.exec: soleil_specified.o soleil_mapper_specified.o specified_mapper.o config_schema.o json.o
+soleil_specified.exec: soleil_specified.o soleil_mapper_specified.o automap_shared.o specified_mapper.o config_schema.o json.o
 	$(CXX) -o $@ $^ $(LINK_FLAGS)
 
 soleil_standard.exec: soleil_standard.o soleil_mapper.o config_schema.o json.o
